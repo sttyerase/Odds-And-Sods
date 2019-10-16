@@ -5,5 +5,5 @@
 
 TARG=${1:-"ssh"}  ## DEFAULT SEARCH IF NO $1
 /usr/bin/clear
-history | grep --color=auto "^...... $TARG "
+history | grep --color=auto "^...... $TARG"
 
