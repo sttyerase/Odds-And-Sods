@@ -20,7 +20,7 @@ except KeyError:
     DEBUG = 'false'
 if(DEBUG == 'true'): print 'DEBUG: ', DEBUG
 ## BEGIN PROCESSING
-## READ EACH LINE AND PARSE FOR WEB URL USING HREF=
+## READ EACH LINE AND PARSE FOR WEB URL BETWEEN QUOTE MARKS STARTING WITH HREF=
 for line in fileinput.input():
     count += 1
     if(line.find('HREF=') > 0):
@@ -29,6 +29,11 @@ for line in fileinput.input():
             urlstart  =  line.index('"',strstart + 1)
             urlend    =  line.index('"',urlstart + 1)
             urlstr    =  line[urlstart+1:urlend]
+            ## CHECK URL SCHEME FOR HTTP/HTTPS/FTP
+            scheme    =  urlstr[0:urlstr.index(":")]
+            if(scheme !='http' and scheme != 'https'):
+                print 'CANNOT TEST URI SCHEME: ', scheme
+                continue
         except ValueError as ve:
             print 'ValueError: ', ve
             continue
@@ -36,20 +41,20 @@ for line in fileinput.input():
         ## FORCE GET METHOD.  ADD USER-AGENT HEADER TO REQUEST
         req       = Request(urlstr)
         req.add_header('User-Agent',user_agent)
-        if(DEBUG == 'true'): print '####: ', urlstr,' METH: ', req.get_method(),' $$$$: ',req.has_data()
+        if(DEBUG == 'true'): print '####: ', urlstr,' METH: ', req.get_method(),' HAS_DATA: ',req.has_data(),' SCHEME: ', scheme
         ### VALIDATE EACH URL
         try:
             response = urlopen(req, timeout = 10)
         except HTTPError as e:
             print count, ' : ' ,urlstr
-            print 'The server couldn\'t fulfill the request.'
             print 'Error code: ', e.code, ' : ', e.reason
         except URLError as e:
             print count, ' : ' ,urlstr
-            print 'We failed to reach a server.'
             print 'Reason: ', e.reason
         except ssl.SSLError as ssle:
             print count, ' : ' ,urlstr
             print 'SSL Error: ', ssle
+        except ssl.CertificateError as ce:
+            print 'SSL Cert Error: ', ce    
     if(DEBUG == 'true'): print count
 print 'Operation Complete.'
