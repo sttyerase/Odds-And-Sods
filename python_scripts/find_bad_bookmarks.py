@@ -17,6 +17,7 @@ from httplib import InvalidURL
 DEBUG ='false'
 REQTIMEOUT = 10
 count = 0
+errcount = 0
 ## DETERMINE DEBUG MODE AND OTHER ENV VARIABLES PASSED
 try:
     DEBUG=os.environ['DEBUG']
@@ -55,17 +56,23 @@ for line in fileinput.input():
         except HTTPError as e:
             print count, ' : ' ,urlstr
             print 'Error code: ', e.code, ' : ', e.reason
+            errcount+=1
         except URLError as e:
             print count, ' : ' ,urlstr
             print 'Reason: ', e.reason
+            errcount+=1
         except ssl.SSLError as ssle:
             print count, ' : ' ,urlstr
             print 'SSL Error: ', ssle
+            errcount+=1
         except ssl.CertificateError as ce:
             print 'SSL Cert Error: ', ce  
+            errcount+=1
         except socket.error as se:
             print 'Socket error: ', se
+            errcount+=1
         except InvalidURL as iu:
             print 'Badly formed URL: ', iu
+            errcount+=1
     if(DEBUG == 'true'): print count
-print 'Operation Complete.'
+print 'Operation Complete. Errors counted: ', errcount
