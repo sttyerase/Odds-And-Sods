@@ -6,9 +6,7 @@ USAGE="
 ## INITIAL ENVIRONMENT
 DEBUG=${DEBUG:-"false"}
 CURRENT_DIR=`pwd`
-SOURCE_DIR=${SOURCE_DIR:-`pwd` }
-DIR_NAME=`basename $SOURCE_DIR`
-OUTPUT_FILE_NAME="${DIR_NAME}`date +'%Y%m%d'`.tgz"
+SOURCE_DIR=
 DEST_MACHINE=
 DEST_DIR=
 
@@ -27,7 +25,8 @@ while getopts ":s:d:m:" opt; do
     esac
 done
 DEST_URI="${DEST_MACHINE}:${DEST_DIR}"
-
+SOURCE_DIR=`basename $SOURCE_DIR`
+OUTPUT_FILE_NAME="${SOURCE_DIR}`date +'%Y%m%d'`.tgz"
 ## IF DEBUG PRINT OUT INITIAL VARIABLE VALUES
 if [ $DEBUG = "true" ]
     then printf "CURRENT:               $CURRENT_DIR
@@ -40,10 +39,11 @@ TARGET FILE NAME:      $OUTPUT_FILE_NAME
 fi
 
 ## TEST VARIABLE VALUES AND EXIT IF INCORRECT
-if [ "$DEST_MACHINE" = "" ]; then echo "DESTINATION MACHINE UNDEFINED: $DEST_MACHINE. Exiting now. " ; echo $USAGE ; exit 2; fi
-if [ "$DEST_DIR" = "" ]; then echo "DESTINATION DIRECTORY UNDEFINED: $DEST_DIR. Exiting now. " ; echo $USAGE ; exit 3; fi
+if [ "$DEST_MACHINE" = "" ]; then echo -e "\nERROR: DESTINATION MACHINE UNDEFINED: $DEST_MACHINE. Exiting now. \n" ; echo $USAGE ; exit 2; fi
+if [ "$DEST_DIR" = "" ]; then echo -e "\nERROR: DESTINATION DIRECTORY UNDEFINED: $DEST_DIR. Exiting now. \n" ; echo $USAGE ; exit 3; fi
+if [ "$SOURCE_DIR" = "" ]; then echo "ERROR: SOURCE DIRECTORY UNDEFINED: $SOURCE_DIR. Exiting now. " ; echo $USAGE ; exit 4; fi
 
-## CREATE ARCHIVE AND SHIP TO REMOTE SYSTEM
+## CREATE ARCHIVE AND SHIP TO REMOTE SYSTEM - REQUIRES INTERACTIVE OR SSH CERTS IN PLACE
 tar cvzf $OUTPUT_FILE_NAME $SOURCE_DIR
 scp $OUTPUT_FILE_NAME $DEST_URI
 
