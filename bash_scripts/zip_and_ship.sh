@@ -5,6 +5,7 @@ USAGE="
 "
 ## INITIAL ENVIRONMENT
 DEBUG=${DEBUG:-"false"}
+CLEANUP=${CLEANUP:-"false"}
 CURRENT_DIR=`pwd`
 SOURCE_DIR=
 DEST_MACHINE=
@@ -47,4 +48,5 @@ if [ "$SOURCE_DIR" = "" ]; then echo "ERROR: SOURCE DIRECTORY UNDEFINED: $SOURCE
 tar cvzf $OUTPUT_FILE_NAME $SOURCE_DIR
 scp $OUTPUT_FILE_NAME $DEST_URI
 
+if ["$CLEANUP" = "true" ]; then echo "Removing local archive file: $OUTPUT_FILE_NAME" ; rm $OUTPUT_FILE_NAME ; fi
 
