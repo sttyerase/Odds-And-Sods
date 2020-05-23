@@ -1,0 +1,85 @@
+export MANPATH=$MANPATH:~/toolspace/mysql/man
+export PATH=$PATH:~/toolspace/google-cloud-sdk/bin
+export VISUAL=vi
+export LS_OPTIONS="--color=auto"
+CLEAR=/usr/bin/clear
+GREP=/usr/bin/grep
+DOCKER=/usr/bin/podman
+## THE BASICS
+alias edals='cp ~/.aliases ~/.aliases.bak ; vi ~/.aliases'
+alias rm='rm -i'
+## STATUS CHECKS
+alias ckhttpd='ps -ef | grep -v grep | grep httpd'
+alias ckinet='ifconfig | grep inet'
+alias ckif=ckinet
+alias ckdock='ps -ef | grep docker | grep -v com\. | grep -v grep'
+alias defunct='ps -fe | grep defunct | wc -l'
+alias grep='$GREP -i --color=auto'
+alias syssvc='systemctl list-units --type=service --all'
+alias sysslc='systemctl list-units --type=slice   --all'
+alias sysdev='systemctl list-units --type=device  --all'
+alias sysmnt='systemctl list-units --type=mount   --all'
+alias sysskt='systemctl list-units --type=socket  --all'
+alias systgt='systemctl list-units --type=target  --all'
+## GO COMMANDS
+alias gogo='alias | grep go'
+alias godeploy='cd $DEPLOY_DIR'
+alias gohome='cd ; ls'
+## HISTORIES
+alias hist='~dbmoore/bin/command_history.sh'
+## LIST
+#alias ls='$CLEAR ; /usr/bin/ls -a $LS_OPTIONS'
+alias ls='$CLEAR;/bin/ls -a $LS_OPTIONS'
+alias lss='$CLEAR ; \ls $LS_OPTIONS'
+alias lc='ls -il | less'
+alias la='ls -il'
+alias laa='$CLEAR ; \ls -il $LS_OPTIONS'
+alias lv='ls -il /Volumes'
+alias who='$CLEAR;/usr/bin/who'
+alias cls='$CLEAR'
+alias dir='ls -ila | less'
+## PROCESSES
+alias ps='$CLEAR ; /bin/ps'
+alias psme='$CLEAR ; ps -fu $LOGNAME'
+alias env='env|sort'
+alias ping='/sbin/ping -c 5'
+## PATH
+alias pathadd='PATH=`pwd`:$PATH ; export PATH'
+alias addpath='PATH=$PATH:`pwd` ; export PATH'
+alias showpath='echo $PATH'
+### CONTAINER STUFF
+alias pcls='$CLEAR; $DOCKER container ls --all'
+alias pils='$CLEAR; $DOCKER image ls'
+alias pilsa='$CLEAR; $DOCKER image ls --all'
+alias pnls='$CLEAR; $DOCKER network ls'
+alias pirm='$DOCKER image rm'
+alias pcrm='$DOCKER container rm'
+alias pps='$DOCKER ps'
+alias cknone='pils | grep \<none'
+alias starttom='$DOCKER start myTomcat'
+alias stoptom='$DOCKER stop myTomcat'
+### KUBERNETES STUFF
+alias kgpod='clear ; kubectl get pods --all-namespaces -o wide'
+alias kgpody='clear ; kubectl get pods --all-namespaces -o yaml'
+alias kdpod='clear ; kubectl describe pod'
+alias kgnod='clear ; kubectl get nodes -o wide'
+alias kdnod='clear ; kubectl describe nodes'
+alias kgsec='clear ; kubectl get secrets'
+alias kgdepl='clear ; kubectl get deployments --all-namespaces -o wide'
+alias kgsvs='clear ; kubectl get services --all-namespaces -o wide'
+### ALIAS TO SET TERMINAL TITLE TO USERNAME@NODE and CURRENT WORKING DIRECTORY
+if alias cd > /dev/null 2>&1 ; then : # DO NOTHING
+else function mycd
+{
+  cd $* > /dev/null
+  ~dbmoore/bin/xname2 "$LOGNAME@`hostname` - $PWD"
+}
+alias cd=mycd
+PS1="Fedora Rules>>" ; export PS1
+fi
+## SETUP COMMANDS
+alias xdp='xdpyinfo'
+## APPLICATIONS
+## INITIALIZE
+cd .
+
