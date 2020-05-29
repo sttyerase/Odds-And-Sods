@@ -1,0 +1,24 @@
+#!/bin/sh 
+# 
+#	  Name: xname (shell script) 
+#		name xterm icon and/or window 
+#	  Date: 1993-Nov-03 and prior 
+# 
+ 
+# 
+OSTYPE=`uname -s`
+N="$*" 
+if [ -z "$N" ]; then 
+	N=`hostname | awk -F'.' '{print $1}'` 
+	fi 
+ 
+# 
+if [ "$1" = "-i" ]; then shift; echo "]1;$N\c"; exit; fi 
+if [ "$1" = "-w" ]; then shift; echo "]2;$N"\c; exit; fi 
+
+case "$OSTYPE" in
+   "Linux" ) echo -ne "\033]2;$N\007" ;;
+      *    ) echo "\033]2;$N\007\c" 
+esac
+
+
