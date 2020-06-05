@@ -59,14 +59,15 @@ alias cknone='pils | grep \<none'
 alias starttom='$DOCKER start myTomcat'
 alias stoptom='$DOCKER stop myTomcat'
 ### KUBERNETES STUFF
-alias kgpod='clear ; kubectl get pods --all-namespaces -o wide'
-alias kgpody='clear ; kubectl get pods --all-namespaces -o yaml'
-alias kdpod='clear ; kubectl describe pod'
-alias kgnod='clear ; kubectl get nodes -o wide'
-alias kdnod='clear ; kubectl describe nodes'
-alias kgsec='clear ; kubectl get secrets'
-alias kgdepl='clear ; kubectl get deployments --all-namespaces -o wide'
-alias kgsvs='clear ; kubectl get services --all-namespaces -o wide'
+alias kgpod='$CLEAR ; kubectl get pods --all-namespaces -o wide'
+alias kgpody='$CLEAR ; kubectl get pods --all-namespaces -o yaml'
+alias kdpod='$CLEAR ; kubectl describe pod'
+alias kgnod='$CLEAR ; kubectl get nodes -o wide'
+alias kdnod='$CLEAR ; kubectl describe nodes'
+alias kgsec='$CLEAR ; kubectl get secrets'
+alias kgdepl='$CLEAR ; kubectl get deployments --all-namespaces -o wide'
+alias kgsvc='$CLEAR ; kubectl get services --all-namespaces -o wide'
+alias kgend='$CLEAR ; kubectl get endpoints --all-namespaces -o wide'
 ### ALIAS TO SET TERMINAL TITLE TO USERNAME@NODE and CURRENT WORKING DIRECTORY
 if alias cd > /dev/null 2>&1 ; then : # DO NOTHING
 else function mycd
