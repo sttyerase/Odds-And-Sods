@@ -4,7 +4,7 @@ export VISUAL=vi
 export LS_OPTIONS="--color=auto"
 CLEAR=/usr/bin/clear
 GREP=/usr/bin/grep
-DOCKER=/usr/bin/podman
+DOCKER=/usr/bin/docker
 ## THE BASICS
 alias edals='cp ~/.aliases ~/.aliases.bak ; vi ~/.aliases'
 alias rm='rm -i'
@@ -48,13 +48,13 @@ alias pathadd='PATH=`pwd`:$PATH ; export PATH'
 alias addpath='PATH=$PATH:`pwd` ; export PATH'
 alias showpath='echo $PATH'
 ### CONTAINER STUFF
-alias pcls='$CLEAR; $DOCKER container ls --all'
-alias pils='$CLEAR; $DOCKER image ls'
-alias pilsa='$CLEAR; $DOCKER image ls --all'
-alias pnls='$CLEAR; $DOCKER network ls'
-alias pirm='$DOCKER image rm'
-alias pcrm='$DOCKER container rm'
-alias pps='$DOCKER ps'
+alias dcls='$CLEAR; $DOCKER container ls --all'
+alias dils='$CLEAR; $DOCKER image ls'
+alias dilsa='$CLEAR; $DOCKER image ls --all'
+alias dnls='$CLEAR; $DOCKER network ls'
+alias dirm='$DOCKER image rm'
+alias dcrm='$DOCKER container rm'
+alias dps='$DOCKER ps'
 alias cknone='pils | grep \<none'
 alias starttom='$DOCKER start myTomcat'
 alias stoptom='$DOCKER stop myTomcat'
@@ -68,6 +68,7 @@ alias kgsec='$CLEAR ; kubectl get secrets'
 alias kgdepl='$CLEAR ; kubectl get deployments --all-namespaces -o wide'
 alias kgsvc='$CLEAR ; kubectl get services --all-namespaces -o wide'
 alias kgend='$CLEAR ; kubectl get endpoints --all-namespaces -o wide'
+alias ktr='k3s ctr' ## K3S CONTAINERD MANAGEMENT TOOL -- SIMILAR TO DOCKER CLI
 ### ALIAS TO SET TERMINAL TITLE TO USERNAME@NODE and CURRENT WORKING DIRECTORY
 if alias cd > /dev/null 2>&1 ; then : # DO NOTHING
 else function mycd
