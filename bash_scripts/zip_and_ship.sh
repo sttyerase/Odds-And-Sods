@@ -23,6 +23,9 @@ while getopts ":s:d:m:" opt; do
         d)
         DEST_DIR=$OPTARG
         ;;
+        *)
+        echo "INVALID OPTION: ${opt}"
+        ;;
     esac
 done
 DEST_URI="${DEST_MACHINE}:${DEST_DIR}"
@@ -48,5 +51,5 @@ if [ "$SOURCE_DIR" = "" ]; then echo "ERROR: SOURCE DIRECTORY UNDEFINED: $SOURCE
 tar cvzf $OUTPUT_FILE_NAME $SOURCE_DIR
 scp $OUTPUT_FILE_NAME $DEST_URI
 
-if ["$CLEANUP" = "true" ]; then echo "Removing local archive file: $OUTPUT_FILE_NAME" ; rm $OUTPUT_FILE_NAME ; fi
+if [ "$CLEANUP" = "true" ]; then echo "Removing local archive file: $OUTPUT_FILE_NAME" ; rm $OUTPUT_FILE_NAME ; fi
 
