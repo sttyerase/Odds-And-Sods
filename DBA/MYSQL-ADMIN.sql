@@ -38,4 +38,22 @@ create database db_example;
 create user 'springuser'@'%' identified by 'springuser';
 grant all on db_example.* to 'springuser'@'%';
 
+-- WORDLE
+create trigger check_word_length
+    before insert on wordle
+    for each row
+    call check_word_length();
+
+delimiter //
+CREATE PROCEDURE `check_word_length` (in the_word varchar(5))
+BEGIN
+   if (character_length(the_word) != 5) then signal sqlstate '81020'
+      set message_text = 'Wordle word length must be exactly 5 characters.';
+end if;
+END //
+delimiter ;
+DROP PROCEDURE `check_word_length`;
+create trigger `verify_word`
+    before insert on wordle for each row call check_word_length(NEW.word_value);
+drop trigger verify_word;
 
