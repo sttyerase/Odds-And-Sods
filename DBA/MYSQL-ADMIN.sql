@@ -7,7 +7,7 @@ select table_name, table_schema, table_catalog, table_type from TABLES -- list t
 -- LIST TABLES IN A SCHEMA
 SHOW TABLES in mysql;
 select table_name as tables_in_mysql from TABLES where TABLE_SCHEMA = 'mysql' order by table_name;
-   
+
 select table_schema, table_name,table_rows from tables order by table_schema, table_name;
 select table_schema, table_name,table_rows from tables where table_schema = '' order  by table_schema, table_name;
 

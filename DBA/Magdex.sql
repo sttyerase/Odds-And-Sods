@@ -25,10 +25,12 @@ commit;
 create index article_category_index on articles(article_category);
 
 -- WORDLE
-insert into wordle (word_value) values ('short');
-select * from wordle where (select substring(word_value,5,1)= 'E') order by word_value;
+insert into wordle (word_value) values ('porch');
+select count(*) from wordle;
 select * from wordle order by word_value;
-
+select * from wordle where (select substring(word_value,1,1)= 's') order by word_value;
+select * from wordle where (select substring(word_value,3,1)= 'a') order by word_value;
+select * from (select * from wordle where (select substring(word_value,2,1)= 'e')) as myrows where (select substring(word_value,3,1)= 'a');
 
 SHOW VARIABLES LIKE "sql_safe_updates";
 show variables like '%limit%';
