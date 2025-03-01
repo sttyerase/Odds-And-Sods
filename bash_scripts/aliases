@@ -8,6 +8,7 @@ DOCKER=/usr/bin/docker
 ## THE BASICS
 alias edals='cp ~/.aliases ~/.aliases.bak ; vi ~/.aliases'
 alias rm='rm -i'
+alias file='file --no-dereference' ## REVERSE THE DEFAULT BEHAVIOUR
 ## STATUS CHECKS
 alias ckhttpd='ps -ef | grep -v grep | grep httpd'
 alias ckinet='ifconfig | grep inet'
