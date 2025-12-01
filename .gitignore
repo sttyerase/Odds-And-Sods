@@ -1,5 +1,7 @@
 .pydevproject
 .project
-.idea
+.idea/
 Odds-And-Sods.iml
 *.bak
+.venv/
+*.http
