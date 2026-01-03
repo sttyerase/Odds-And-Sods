@@ -1,34 +1,52 @@
 #! /usr/bin/env python3
-## PYTHON PROGRAM TO LOOP A FILE OF BOOKMARKS EXPORTED FROM CHROME AND
+## PYTHON PROGRAM TO LOOP A FILE OF BOOKMARKS EXPORTED FROM CHROME OR FIREFOX AND
 ## REPORT ERRORS
-## TO RUN IN DEBUG MODE SET ENVIRONMENT VARIABLE DEBUG=true
+## TO RUN IN DEBUG MODE SET ENVIRONMENT VARIABLE VERBOSE=true
 ## e.g., at the prompt enter:
-##    DEBUG=true find_bad_bookmarks.py <bookmarks filename>
+##    VERBOSE=true find_bad_bookmarks.py <bookmarks file name>
 ## Default values:
-## DEBUG = FALSE
-## REQTIMEOUT = 10
-
+## VERBOSE = false
+## REQTIMEOUT = 5
+import argparse
+import sys
+import certifi
 import urllib3
-import fileinput, os, ssl, socket
+import os
 
 ## SET WORKING ENVIRONMENT
-DEBUG ='false'
-REQTIMEOUT = 10
+VERBOSE ='false'
+REQTIMEOUT = 5
 count = 0
 errcount = 0
-http = urllib3.PoolManager
-## DETERMINE DEBUG MODE AND OTHER ENV VARIABLES PASSED
+skiplist = ['accounts.google.com']
+## PARSE COMMAND LINE ARGUMENTS
+parser = argparse.ArgumentParser(description='find_bad_bookmarks.py <bookmarks file name>')
+parser.add_argument('filename',default='bookmarks.html')
+args = parser.parse_args()
+fname=args.filename
+fobject = ''
+http = urllib3.PoolManager(
+    cert_reqs='REQUIRED',
+    ca_certs=certifi.where()
+)
+## DETERMINE VERBOSE MODE AND OTHER ENV VARIABLES PASSED
 try:
-    DEBUG=os.environ['DEBUG']
-    REQTIMEOUT=os.environ['REQTIMEOUT']
+    VERBOSE=os.getenv("VERBOSE")
+    REQTIMEOUT=os.getenv("REQTIMEOUT")
+    fobject = open(fname)
+except OSError :
+    print ('UNABLE TO OPEN FILE ', fname)
+    sys.exit(2)
 except AttributeError:
-    DEBUG = 'false'
+    print('ATTRIBUTE ERROR. EXITING NOW.')
+    sys.exit(3)
 except KeyError:
-    DEBUG = 'false'
-if DEBUG == 'true': print ('DEBUG: ', DEBUG)
+    print('KEY MAPPING ERROR. EXITING NOW')
+    sys.exit(4)
+if VERBOSE == 'true': print ('VERBOSE: ', VERBOSE)
 ## BEGIN PROCESSING
 ## READ EACH LINE AND PARSE FOR WEB URL BETWEEN QUOTE MARKS STARTING WITH HREF=
-for line in fileinput.input():
+for line in fobject:
     count += 1
     if line.find('HREF=') > 0:
         try:
@@ -44,29 +62,19 @@ for line in fileinput.input():
         except ValueError as ve:
             print ('ValueError: ', ve)
             continue
-        user_agent= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1)'
-        ## FORCE GET METHOD.  ADD USER-AGENT HEADER TO REQUEST
-        if DEBUG == 'true': print ('####: ', urlstr, ' METH: ', 'GET', ' HAS_DATA: ', 'UNKNOWN', ' SCHEME: ', scheme)
         ### VALIDATE EACH URL
         try:
             response = http.request('GET',urlstr)
-        except urllib3.exceptions.HTTPError as he:
-            print (count, ' : ' ,urlstr)
-            print ('ERROR: ', he)
-            errcount+=1
-        except urllib3.exceptions.RequestError as re:
-            print (count, ' : ' ,urlstr)
-            print ('ERROR: ',re)
-            errcount+=1
-        except ssl.CertificateError as ce:
-            print ('SSL Cert Error: ', ce)
-            errcount+=1
-        except ssl.SSLError as ssle:
-            print (count, ' : ' ,urlstr)
-            print ('SSL Error: ', ssle)
-            errcount+=1
-        except socket.error as se:
-            print ('Socket error: ', se)
-            errcount+=1
-    if DEBUG == 'true': print ('COUNT: ', count)
+            if VERBOSE == 'true': print ('####: ', urlstr,' STATUS: ',response.status ,' SCHEME: ', scheme)
+            if response.status != 200 :
+                errcount+=1
+                if response.status == 403:
+                    if VERBOSE == 'true': print ('UNAUTHORIZED REQUEST',urlstr)
+                else:
+                    print ('INVALID: ' + urlstr + ' :: STATUS: ' , response.status)
+        except urllib3.exceptions.SSLError as ssle:
+            print(f"SSL Verification Error: {ssle}")
+        except Exception as re:
+            print(f"RESPONSE ERROR: {re}")
+    if VERBOSE == 'true': print ('COUNT: ', count)
 print ('Operation Complete. Errors counted: ', errcount)
