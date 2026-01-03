@@ -1,0 +1,3 @@
+GET https://example.com/rest_request
+Accept-Encoding: application/json
+apikey: <your secret>
