@@ -25,9 +25,11 @@ parser.add_argument('filename',default='bookmarks.html')
 args = parser.parse_args()
 fname=args.filename
 fobject = ''
+myheaders = {"User-Agent":"PostmanRuntime/7.51.0"}
 http = urllib3.PoolManager(
     cert_reqs='REQUIRED',
-    ca_certs=certifi.where()
+    ca_certs=certifi.where(),
+    headers=myheaders
 )
 ## DETERMINE VERBOSE MODE AND OTHER ENV VARIABLES PASSED
 try:
@@ -68,10 +70,10 @@ for line in fobject:
             if VERBOSE == 'true': print ('####: ', urlstr,' STATUS: ',response.status ,' SCHEME: ', scheme)
             if response.status != 200 :
                 errcount+=1
-                if response.status == 403:
-                    if VERBOSE == 'true': print ('UNAUTHORIZED REQUEST',urlstr)
+                if response.status == 404:
+                    print ('PAGE NOT FOUND',urlstr,'  HEADERS: ',http.headers)
                 else:
-                    print ('INVALID: ' + urlstr + ' :: STATUS: ' , response.status)
+                    if VERBOSE == 'true': print ('OTHER CODE RECEIVED: ' + urlstr + ' :: STATUS: ' , response.status)
         except urllib3.exceptions.SSLError as ssle:
             print(f"SSL Verification Error: {ssle}")
         except Exception as re:
